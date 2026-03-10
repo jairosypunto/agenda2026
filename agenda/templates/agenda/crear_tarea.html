@@ -1,0 +1,6 @@
+<h1>Nueva Tarea</h1>
+<form method="POST">
+    {% csrf_token %} {{ form.as_p }}  <button type="submit">Guardar Tarea</button>
+    <br><br>
+<a href="{% url 'lista_tareas' %}">Volver a la lista</a>
+</form>

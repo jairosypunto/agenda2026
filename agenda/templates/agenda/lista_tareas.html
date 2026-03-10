@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Mi Agenda</title>
+</head>
+<body style="background-color: #007bff; color: white;"> <h1>Mis Tareas Pendientes</h1>
+<a href="{% url 'crear_tarea' %}">Crear nueva tarea</a>
+   <ul>
+    {% for tarea in tareas %}
+        <li>
+            <strong>[{{ tarea.categoria }}]</strong> <strong>{{ tarea.titulo }}</strong>: {{ tarea.descripcion }} 
+            
+            <a href="{% url 'editar_tarea' tarea.id %}">Editar</a> |
+            <a href="{% url 'eliminar_tarea' tarea.id %}">Eliminar</a> |
+
+            {% if tarea.completada %}
+                ✅
+            {% else %}
+                <a href="{% url 'completar_tarea' tarea.id %}">Completar</a>
+            {% endif %}
+        </li>
+    {% empty %}
+        <li>No hay tareas todavía. ¡Descansa!</li>
+    {% endfor %}
+</ul>
+</body>
+</html>
