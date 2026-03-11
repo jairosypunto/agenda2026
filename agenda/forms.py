@@ -1,7 +1,12 @@
 from django import forms
-from .models import Tarea
+from .models import Task
 
-class TareaForm(forms.ModelForm):
+class TaskForm(forms.ModelForm):
     class Meta:
-        model = Tarea
-        fields = ['titulo', 'descripcion', 'categoria']  # Asegúrate de incluir los campos que deseas en el formulario  
+        model = Task
+        fields = ['title', 'description', 'category'] # 'is_completed' se suele manejar aparte
+        widgets = {
+            'title': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Task title...'}),
+            'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
+            'category': forms.Select(attrs={'class': 'form-select'}),
+        }

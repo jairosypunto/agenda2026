@@ -1,47 +1,40 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Tarea
-from .forms import TareaForm  # <--- Importamos el formulario que creamos
+from .models import Task  # Importamos el modelo en inglés
+from .forms import TaskForm  # Importamos el formulario en inglés
 
-# ESTA ES TU VISTA ORIGINAL (No la cambies)
-def lista_tareas(request):
-    tareas = Tarea.objects.all()
-    return render(request, 'agenda/lista_tareas.html', {'tareas': tareas})
+def task_list(request):
+    # 'all()' trae todos los registros. Ordenamos por fecha de creación descendente
+    tasks = Task.objects.all().order_by('-created_at')
+    return render(request, 'agenda/task_list.html', {'tasks': tasks})
 
-# ESTA ES LA VISTA NUEVA (Se añade debajo)
-def crear_tarea(request):
+def create_task(request):
     if request.method == 'POST':
-        form = TareaForm(request.POST)
+        form = TaskForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('lista_tareas') # Redirige a la lista después de guardar
+            return redirect('task_list')
     else:
-        form = TareaForm()
-    return render(request, 'agenda/crear_tarea.html', {'form': form})
+        form = TaskForm()
+    return render(request, 'agenda/task_form.html', {'form': form})
 
-def completar_tarea(request, tarea_id):
-    # Buscamos la tarea por su ID único
-    tarea = get_object_or_404(Tarea, id=tarea_id)
-    # Cambiamos el estado
-    tarea.completada = True
-    tarea.save()
-    # Regresamos a la lista
-    return redirect('lista_tareas')
+def complete_task(request, task_id):
+    task = get_object_or_404(Task, id=task_id)
+    task.is_completed = True
+    task.save()
+    return redirect('task_list')
 
-def editar_tarea(request, tarea_id):
-    tarea = get_object_or_404(Tarea, id=tarea_id)
+def edit_task(request, task_id):
+    task = get_object_or_404(Task, id=task_id)
     if request.method == 'POST':
-        # Pasamos 'instance=tarea' para que guarde cambios en la misma fila
-        form = TareaForm(request.POST, instance=tarea)
+        form = TaskForm(request.POST, instance=task)
         if form.is_valid():
             form.save()
-            return redirect('lista_tareas')
+            return redirect('task_list')
     else:
-        # Aquí cargamos los datos viejos en el formulario
-        form = TareaForm(instance=tarea)
-    
-    return render(request, 'agenda/crear_tarea.html', {'form': form})
+        form = TaskForm(instance=task)
+    return render(request, 'agenda/task_form.html', {'form': form})
 
-def eliminar_tarea(request, tarea_id):
-    tarea = get_object_or_404(Tarea, id=tarea_id)
-    tarea.delete() # ¡Esto borra la fila de la base de datos para siempre!
-    return redirect('lista_tareas')
+def delete_task(request, task_id):
+    task = get_object_or_404(Task, id=task_id)
+    task.delete()
+    return redirect('task_list')

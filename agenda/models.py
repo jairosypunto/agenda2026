@@ -1,16 +1,19 @@
 from django.db import models
 
-class Tarea(models.Model):
-    CATEGORIAS = [
-        ('SOFTWARE', 'Desarrollo de Software'),
-        ('INGLES', 'Aprendizaje de Inglés'),
-        ('OTRO', 'Otras tareas'),
-    ]
+class Category(models.Model):
+    name = models.CharField(max_length=50, unique=True)
+    color = models.CharField(max_length=7, default='#007bff')  # Color in hex format
     
-    titulo = models.CharField(max_length=200)
-    descripcion = models.TextField()
-    completada = models.BooleanField(default=False)
-    categoria = models.CharField(max_length=20, choices=CATEGORIAS, default='OTRO') # <--- Nuevo campo
+    def __str__(self):
+        return self.name
+    
+class Task(models.Model):
+    title = models.CharField(max_length=200)
+    description = models.TextField()
+    is_completed = models.BooleanField(default=False)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='tasks')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.titulo
+        return self.title
