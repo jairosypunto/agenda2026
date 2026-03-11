@@ -1,8 +1,31 @@
-<h1>Task Form</h1>
-<form method="POST">
-    {% csrf_token %} 
-    {{ form.as_p }}  
-    <button type="submit">Save Task</button>
-    <br><br>
-    <a href="{% url 'task_list' %}">Back to list</a>
-</form>
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <h1 class="text-primary mb-4">Task Form</h1>
+            
+            <form method="POST" class="card p-4 shadow-sm">
+                {% csrf_token %}
+                
+                {% for field in form %}
+                    <div class="mb-3">
+                        <label class="form-label">{{ field.label }}</label>
+                        {{ field }}
+                        {% if field.help_text %}
+                            <small class="text-muted">{{ field.help_text }}</small>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+                
+                <button type="submit" class="btn btn-primary w-100">Save Task</button>
+            </form>
+            
+            <div class="mt-3 text-center">
+                <a href="{% url 'task_list' %}" class="text-decoration-none">Back to list</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
