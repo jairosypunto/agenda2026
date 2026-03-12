@@ -42,7 +42,11 @@ class Task(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     reminder_time = models.DateTimeField(null=True, blank=True)
-    # --- NUEVO CAMPO: EL SEMÁFORO ---
+    
+    # --- NUEVO: Tiempo de antelación personalizado (en minutos) ---
+    minutes_before = models.PositiveIntegerField(default=15, help_text="¿Cuántos minutos antes quieres el aviso?")
+    
+    # El semáforo para el bot
     notificacion_enviada = models.BooleanField(default=False, db_index=True)
 
     class Meta:
@@ -51,6 +55,7 @@ class Task(models.Model):
 
     def __str__(self):
         return self.title
+    
 
     def time_left(self):
         if self.reminder_time and not self.is_completed:
@@ -64,3 +69,5 @@ class Task(models.Model):
                 return f"{' '.join([p for p in parts if p])} remaining"
             return "Time expired!"
         return None
+    
+    
