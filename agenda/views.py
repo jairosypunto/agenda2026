@@ -41,20 +41,15 @@ def create_task(request):
             
             # --- ACTIVAMOS EL BOT DINÁMICAMENTE ---
             if task.priority == 'H':
-                enviar_telegram(f"🔔 Tarea Urgente: {task.title}", request.user)
+                # Construimos el mensaje con título y descripción
+                mensaje = f"🔔 Tarea Urgente: {task.title}\n📝 Descripción: {task.description}"
+                enviar_telegram(mensaje, request.user)
                 
             messages.success(request, '¡Tarea creada con éxito!')
             return redirect('task_list')
     else:
         form = TaskForm(user=request.user)
     return render(request, 'agenda/task_form.html', {'form': form})
-
-@login_required
-def complete_task(request, task_id):
-    task = get_object_or_404(Task, id=task_id, user=request.user)
-    task.is_completed = True
-    task.save()
-    return redirect('task_list')
 
 @login_required
 def edit_task(request, task_id):
@@ -67,13 +62,24 @@ def edit_task(request, task_id):
             
             # --- AVISAR TAMBIÉN AL EDITAR SI ES URGENTE ---
             if task.priority == 'H':
-                enviar_telegram(f"🔔 Tarea Urgente (Actualizada): {task.title}", request.user)
+                # Construimos el mensaje con título y descripción
+                mensaje = f"🔔 Tarea Urgente (Actualizada): {task.title}\n📝 Descripción: {task.description}"
+                enviar_telegram(mensaje, request.user)
             
             messages.success(request, 'Tarea actualizada correctamente.')
             return redirect('task_list')
     else:
         form = TaskForm(user=request.user, instance=task)
     return render(request, 'agenda/task_form.html', {'form': form})
+
+@login_required
+def complete_task(request, task_id):
+    task = get_object_or_404(Task, id=task_id, user=request.user)
+    task.is_completed = True
+    task.save()
+    return redirect('task_list')
+
+
 
 @login_required
 def delete_task(request, task_id):
