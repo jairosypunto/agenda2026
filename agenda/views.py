@@ -5,7 +5,12 @@ from django.contrib import messages
 from .utils import enviar_telegram
 from .models import Task
 from .forms import TaskForm
+from django.http import HttpResponse
+from agenda.notificar import revisar_tareas # Importamos tu lógica
 
+def despertar_reloj(request):
+    revisar_tareas() # Ejecuta tu lógica actual
+    return HttpResponse("Reloj ejecutado con éxito")
 
 
 @login_required
