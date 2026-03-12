@@ -54,7 +54,7 @@
             </li>
         {% empty %}
             <li class="list-group-item text-center py-4">
-                <p class="mb-0 text-muted">No tasks yet. Keep learning, Jairo!</p>
+                <p>No tasks yet. Keep learning, {{ user.username|title }}!</p>
             </li>
         {% endfor %}
     </ul>
