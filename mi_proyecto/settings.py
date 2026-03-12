@@ -103,25 +103,31 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
-# Internationalization
-# https://docs.djangoproject.com/en/5.2/topics/i18n/
-
-LANGUAGE_CODE = 'en-us'
-
-TIME_ZONE = 'UTC'
+# --- Cambios en Internacionalización ---
+LANGUAGE_CODE = 'es-co' # Español de Colombia
+TIME_ZONE = 'America/Bogota' # Tu zona horaria local
 
 USE_I18N = True
+USE_TZ = True # ¡IMPORTANTE! Mantener esto en True es profesional
 
-USE_TZ = True
+# --- Seguridad Pro ---
+# Cambia DEBUG a False cuando subas a producción en PythonAnywhere
+DEBUG = os.environ.get('DJANGO_DEBUG', 'True') == 'True'
 
-
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/5.2/howto/static-files/
-
-STATIC_URL = 'static/'
+# --- Archivos Estáticos (WhiteNoise) ---
+STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+# Si planeas añadir imágenes de usuario o adjuntos en el futuro:
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# --- Configuraciones de Autenticación ---
+LOGIN_URL = 'login'              # A dónde enviar si no estás logueado
+LOGIN_REDIRECT_URL = 'task_list'  # A dónde ir después de un login exitoso
+LOGOUT_REDIRECT_URL = 'login'    # A dónde ir después de cerrar sesión

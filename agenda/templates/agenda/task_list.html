@@ -7,24 +7,55 @@
 <div class="card shadow">
     <ul class="list-group list-group-flush">
         {% for task in tasks %}
-            <li class="list-group-item d-flex justify-content-between align-items-center">
-                <div>
-                    <span class="badge bg-info text-dark">{{ task.category.name }}</span>
-                    <strong>{{ task.title }}</strong>: {{ task.description }}
+            <li class="list-group-item">
+                {% if task.time_left and not task.is_completed %}
+                    <div class="alert {% if 'remaining' in task.time_left %}alert-warning{% else %}alert-danger{% endif %} py-1 mb-2 d-flex align-items-center" style="font-size: 0.85rem;">
+                        <span class="me-2">⏰</span>
+                        <span><strong>Status:</strong> {{ task.time_left }}</span>
+                    </div>
+                {% endif %}
+
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <span class="badge bg-info text-dark">{{ task.category.name }}</span>
+                        <strong>{{ task.title }}</strong>: {{ task.description }}
+                    </div>
+                    <div>
+                        <a href="{% url 'edit_task' task.id %}" class="btn btn-sm btn-outline-warning">Edit</a>
+                        <a href="{% url 'delete_task' task.id %}" class="btn btn-sm btn-outline-danger">Delete</a>
+                        {% if task.is_completed %}
+                            <span class="badge bg-success">✅ Done</span>
+                        {% else %}
+                            <a href="{% url 'complete_task' task.id %}" class="btn btn-sm btn-outline-success">Complete</a>
+                        {% endif %}
+                    </div>
                 </div>
-                <div>
-                    <a href="{% url 'edit_task' task.id %}" class="btn btn-sm btn-outline-warning">Edit</a>
-                    <a href="{% url 'delete_task' task.id %}" class="btn btn-sm btn-outline-danger">Delete</a>
-                    
-                    {% if task.is_completed %}
-                        <span class="badge bg-success">✅ Done</span>
-                    {% else %}
-                        <a href="{% url 'complete_task' task.id %}" class="btn btn-sm btn-outline-success">Complete</a>
-                    {% endif %}
-                </div>
+                <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+                <script>
+                    document.addEventListener('DOMContentLoaded', function() {
+                        {% for task in tasks %}
+                            {% if not task.is_completed and task.reminder_time %}
+                                // Si faltan menos de 24 horas (ajusta según necesites)
+                                Swal.fire({
+                                    title: '¡Recordatorio!',
+                                    text: 'La tarea "{{ task.title }}" vence pronto: {{ task.time_left }}',
+                                    icon: 'info',
+                                    toast: true,
+                                    position: 'top-end',
+                                    showConfirmButton: false,
+                                    timer: 5000,
+                                    timerProgressBar: true
+                                });
+                            {% endif %}
+                        {% endfor %}
+                    });
+                </script>
             </li>
         {% empty %}
-            <li class="list-group-item">No tasks yet. Keep learning!</li>
+            <li class="list-group-item text-center py-4">
+                <p class="mb-0 text-muted">No tasks yet. Keep learning, Jairo!</p>
+            </li>
         {% endfor %}
     </ul>
 </div>
