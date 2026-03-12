@@ -42,11 +42,15 @@ def edit_task(request, task_id):
         form = TaskForm(user=request.user, data=request.POST, instance=task)
         if form.is_valid():
             with transaction.atomic():
+                # Detectamos si cambió la fecha de recordatorio antes de guardar
+                # form.changed_data es una lista de los campos que el usuario modificó
+                if 'reminder_time' in form.changed_data:
+                    task.notificacion_enviada = False
+                
                 task = form.save() 
             
             # --- AVISAR TAMBIÉN AL EDITAR SI ES URGENTE ---
             if task.priority == 'H':
-                # Construimos el mensaje con título y descripción
                 mensaje = f"🔔 Tarea Urgente (Actualizada): {task.title}\n📝 Descripción: {task.description}"
                 enviar_telegram(mensaje, request.user)
             

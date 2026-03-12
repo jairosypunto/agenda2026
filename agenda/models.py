@@ -42,10 +42,12 @@ class Task(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     reminder_time = models.DateTimeField(null=True, blank=True)
+    # --- NUEVO CAMPO: EL SEMÁFORO ---
+    notificacion_enviada = models.BooleanField(default=False, db_index=True)
 
     class Meta:
         ordering = ['-created_at']
-        indexes = [models.Index(fields=['user', 'is_completed'])]
+        indexes = [models.Index(fields=['user', 'is_completed', 'notificacion_enviada'])]
 
     def __str__(self):
         return self.title
